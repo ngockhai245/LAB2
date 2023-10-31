@@ -51,7 +51,7 @@ void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_TIM2_Init(void);
 /* USER CODE BEGIN PFP */
-
+void updateClockBuffer();
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -96,11 +96,25 @@ int main(void)
   /* USER CODE BEGIN WHILE */
 
 
-
+int hour = 15, minute = 8, second = 50;
 
   while (1)
   {
     /* USER CODE END WHILE */
+	  second++;
+	  if(second >= 60){
+		  second = 0;
+		  minute++;
+	  }
+	  if(minute >= 60){
+		  minute = 0;
+		  hour++;
+	  }
+	  if(hour >= 24){
+		  hour = 0;
+	  }
+	  updateClockBuffer();
+	  HAL_Delay(1000);
 
     /* USER CODE BEGIN 3 */
   }
@@ -337,7 +351,6 @@ void display7SEG(int num){
   }
 
 const int MAX_LED = 4;
-
 int led_buffer[4] = {4, 7, 0, 3};
 
 void update7SEG(int index){
@@ -374,6 +387,28 @@ void update7SEG(int index){
 		break;
 	}
 }
+
+int hour = 17, minute = 58, second = 40;
+void updateClockBuffer(){
+	second++;
+	if (second >= 60){
+		second = 0;
+		minute++;
+	}
+	if (minute >= 60){
+		minute = 0;
+		hour++;
+	}
+	if (hour >= 24){
+		hour = 0;
+	}
+	led_buffer[0] = hour / 10;
+	led_buffer[1] = hour % 10;
+	led_buffer[2] = minute / 10;
+	led_buffer[3] = minute % 10;
+}
+
+
 
 int index_led = 0;
 
