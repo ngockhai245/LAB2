@@ -56,7 +56,7 @@ void updateClockBuffer();
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-
+int hour = 4, minute = 7, second = 3;
 /* USER CODE END 0 */
 
 /**
@@ -96,7 +96,7 @@ int main(void)
   /* USER CODE BEGIN WHILE */
 
 
-int hour = 15, minute = 8, second = 50;
+
 
   while (1)
   {
@@ -388,20 +388,8 @@ void update7SEG(int index){
 	}
 }
 
-int hour = 17, minute = 58, second = 40;
+
 void updateClockBuffer(){
-	second++;
-	if (second >= 60){
-		second = 0;
-		minute++;
-	}
-	if (minute >= 60){
-		minute = 0;
-		hour++;
-	}
-	if (hour >= 24){
-		hour = 0;
-	}
 	led_buffer[0] = hour / 10;
 	led_buffer[1] = hour % 10;
 	led_buffer[2] = minute / 10;
