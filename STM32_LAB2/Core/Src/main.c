@@ -22,7 +22,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "software_timer.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -56,7 +56,7 @@ void updateClockBuffer();
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-int hour = 4, minute = 7, second = 3;
+int hour = 14, minute = 27, second = 53;
 /* USER CODE END 0 */
 
 /**
@@ -97,25 +97,28 @@ int main(void)
 
 
 
-
+  set_timer_dot(3);
+  int hour = 14, minute = 27, second = 53;
   while (1)
   {
     /* USER CODE END WHILE */
-	  second++;
-	  if(second >= 60){
-		  second = 0;
-		  minute++;
+	  if(timer_dot_flag == 1){
+		  set_timer_dot(100);
+		  second++;
+		  if(second >= 60){
+			  second = 0;
+			  minute++;
+		  }
+		  if(minute >= 60){
+			  minute = 0;
+			  hour++;
+		  }
+		  if(hour >= 24){
+			  hour = 0;
+		  }
+		  updateClockBuffer();
+		  HAL_GPIO_TogglePin(DOT_GPIO_Port, DOT_Pin);
 	  }
-	  if(minute >= 60){
-		  minute = 0;
-		  hour++;
-	  }
-	  if(hour >= 24){
-		  hour = 0;
-	  }
-	  updateClockBuffer();
-	  HAL_Delay(1000);
-
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
@@ -405,34 +408,16 @@ int LED_status = 0;
 
 int dot_LED_counter = 100;
 
+int timer_led_count = 3;
+
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
-	counter--;
-	dot_LED_counter--;
-	if (dot_LED_counter <= 0){
-		dot_LED_counter = 100;
-		HAL_GPIO_TogglePin(DOT_GPIO_Port, DOT_Pin);
-	}
-	if (counter <= 0){
-		counter = 25;
-		switch(LED_status){
-		case 0:
-			update7SEG(0);
-			LED_status = 1;
-			break;
-		case 1:
-			update7SEG(1);
-			LED_status = 2;
-			break;
-		case 2:
-			update7SEG(2);
-			LED_status = 3;
-			break;
-		case 3:
-			update7SEG(3);
-			LED_status = 0;
-			break;
-		default:
-			break;
+	timerRun();
+	if(timer_led_count > 0){
+		timer_led_count --;
+		if(timer_led_count <= 0){
+			timer_led_count = 25;
+			update7SEG(index_led);
+			index_led = (index_led + 1) % MAX_LED;
 		}
 	}
 }
